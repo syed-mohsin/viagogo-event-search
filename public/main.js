@@ -1,6 +1,6 @@
 var ViaGogoWorld = {};
 
-ViaGogoWorld.generateWorld = function(numEvents, xDim, yDim) {
+ViaGogoWorld.generateWorld = function(numEvents, maxTicketsPerEvent, maxTicketPrice, xDim, yDim) {
   var world = {
     xDim: xDim,
     yDim: yDim,
@@ -21,11 +21,11 @@ ViaGogoWorld.generateWorld = function(numEvents, xDim, yDim) {
     numEvents = Math.floor(maxEvents / 2);
   }
 
-  var randXPos, randYPos, seenEvent, event;
+  var randXPos, randYPos, seenEvent, event, tickets;
 
   while (eventCount < numEvents) {
-    randXPos = Math.floor(Math.random() * worldWidth - xDim);
-    randYPos = Math.floor(Math.random() * worldHeight - yDim);
+    randXPos = this.getRandomNumber(worldWidth, xDim);
+    randYPos = this.getRandomNumber(worldHeight, yDim);
 
     seenCoord = JSON.stringify(randXPos + ',' + randYPos);
 
@@ -34,10 +34,15 @@ ViaGogoWorld.generateWorld = function(numEvents, xDim, yDim) {
       continue;
     }
 
+    // generate tickets for event
+    tickets = this.generateTickets(maxTicketsPerEvent, maxTicketPrice);
+
+    // create event object
     event = {
       id: eventId++, // increment id
       xPos: randXPos,
       yPos: randYPos,
+      tickets: tickets,
     };
 
     world.events.push(event);
@@ -49,15 +54,46 @@ ViaGogoWorld.generateWorld = function(numEvents, xDim, yDim) {
   return world;
 };
 
+ViaGogoWorld.generateTickets = function(maxTicketsPerEvent, maxTicketPrice) {
+  var tickets = [];
+
+  var randomNumTickets = this.getRandomNumber(maxTicketsPerEvent),
+      ticket, ticketPrice;
+
+  for (var i=0; i<randomNumTickets; i++) {
+    // ticketPrice > 0
+    ticketPrice = this.getRandomNumber(maxTicketPrice + 1) + 1;
+
+    ticket = {
+      price: ticketPrice
+    };
+
+    tickets.push(ticket);
+  }
+
+  // sort ticket prices for easier price search O(NlogN)
+  tickets.sort(function(a,b) {
+    return a.price - b.price;
+  });
+
+  return tickets;
+};
+
+ViaGogoWorld.getRandomNumber = function(range, offset) {
+  return Math.floor(Math.random() * range - (offset || 0));
+};
+
 (function() {
-  var buttonSelector = '[name=find_tickets]';
-  var inputSelector = '[name=coordinates]';
+  var numEvents = 100,
+      worldXDimension = 10,
+      worldYDimension = 10,
+      maxTicketsPerEvent = 100,
+      maxTicketPrice = 300;
 
-  var numEvents = 99999999;
-  var worldXDimension = 10;
-  var worldYDimension = 10;
+  console.log(ViaGogoWorld.generateWorld(numEvents, maxTicketsPerEvent, maxTicketPrice, worldXDimension, worldYDimension));
 
-  console.log(ViaGogoWorld.generateWorld(numEvents, worldXDimension, worldYDimension));
+  var buttonSelector = '[name=find_tickets]',
+      inputSelector = '[name=coordinates]';
 
   // listener to read input and send to server to be processed
   $(buttonSelector).on('click', function(e) {
