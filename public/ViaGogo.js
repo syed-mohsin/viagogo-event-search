@@ -61,7 +61,7 @@ ViaGogo.generateTickets = function(maxTicketsPerEvent, maxTicketPrice) {
 
   for (var i=0; i<randomNumTickets; i++) {
     // ticketPrice > 0
-    ticketPrice = this.getRandomNumber(maxTicketPrice + 1) + 1;
+    ticketPrice = this.getRandomNumber((maxTicketPrice + 1) * 100) + 1;
 
     ticket = {
       price: ticketPrice
@@ -88,16 +88,21 @@ ViaGogo.getRandomNumber = function(range, offset) {
 ViaGogo.renderNearestEvents = function(listSelector, events, userX, userY) {
   $(listSelector).html('');
 
-  var listElement, distance, event, cheapestPrice;
+  var listElement, distance, event, cheapestPrice,
+      eventOutput, priceOutput, distanceOutput;
 
   for (var i=0; i<5 && i<events.length; i++) {
     event = events[i];
 
     distance = Math.abs(userX - event.xPos) + Math.abs(userY - event.yPos);
-    cheapestPrice = event.cheapestTicket ? event.cheapestTicket.price : '(no tickets)';
+    cheapestPrice = event.cheapestTicket ? (event.cheapestTicket.price / 100).toFixed(2) : '(no tickets)';
+
+    eventOutput = 'Event ' + event.id;
+    priceOutput = '$' + cheapestPrice;
+    distanceOutput = 'Distance ' + distance + ' (' + event.xPos + ', ' + event.yPos + ')';
 
     listElement = $('<li></li>');
-    listElement.append('Event ' + event.id + ' - ' + '$' + cheapestPrice + ', Distance ' + distance);
+    listElement.append(eventOutput + ' - ' + priceOutput + ', ' + distanceOutput);
 
     $(listSelector).append(listElement);
   }
