@@ -1,5 +1,14 @@
 var ViaGogo = {};
 
+/**
+ * generates a 'world' object with a bounded x and y and specified number of events
+ * @param {number} numEvents
+ * @param {number} maxTicketsPerEvent
+ * @param {number} maxTicketPrice
+ * @param {number} xDim
+ * @param {number} yDim
+ * @return {object[]}
+ */
 ViaGogo.generateWorld = function(numEvents, maxTicketsPerEvent, maxTicketPrice, xDim, yDim) {
   var world = {
     xDim: xDim,
@@ -53,6 +62,12 @@ ViaGogo.generateWorld = function(numEvents, maxTicketsPerEvent, maxTicketPrice, 
   return world;
 };
 
+/**
+ * Generate a random length array of tickets in range [0, maxTicketsPerEvent]
+ * @param {number} maxTicketsPerEvent
+ * @param {number} maxTicketPrice
+ * @return {object}
+ */
 ViaGogo.generateTickets = function(maxTicketsPerEvent, maxTicketPrice) {
   var tickets = [];
 
@@ -81,10 +96,23 @@ ViaGogo.generateTickets = function(maxTicketsPerEvent, maxTicketPrice) {
   };
 };
 
+/**
+ * Return a random number between [offset - (range + offset)]
+ * @param {number} range
+ * @param {number} offset
+ * @return {number}
+ */
 ViaGogo.getRandomNumber = function(range, offset) {
   return Math.floor(Math.random() * range - (offset || 0));
 };
 
+/**
+ * render the nearest 5 events on the web page using jQuery
+ * @param {string} listSelector
+ * @param {object[]} events
+ * @param {number} userX
+ * @param {number} userY
+ */
 ViaGogo.renderNearestEvents = function(listSelector, events, userX, userY) {
   $(listSelector).html('');
 
@@ -108,10 +136,18 @@ ViaGogo.renderNearestEvents = function(listSelector, events, userX, userY) {
   }
 };
 
+/**
+ * render the default error message using jQuery
+ * @param {string} listSelector
+ */
 ViaGogo.renderErrorMessage = function(listSelector) {
   $(listSelector).html('<b>Out of range or invalid input (must be formatted as x,y)</b>');
 };
 
+/**
+ * Intiialize the world with default inputs.
+ * Initialize listener for user input submission.
+ */
 ViaGogo.init = function() {
   var numEvents = 100,
       worldXDimension = 10,
