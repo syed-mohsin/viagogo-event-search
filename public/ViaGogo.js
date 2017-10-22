@@ -179,7 +179,7 @@ ViaGogo.init = function() {
     var userY = parseInt(inputCoords[1]);
 
     // input validation
-    if (inputCoords.length !== 2 ||
+    if (inputCoords.length !== 2 || !userX || !userY ||
         Math.abs(userX) > WORLD_X_DIMENSION ||
         Math.abs(userY) > WORLD_Y_DIMENSION) {
 
