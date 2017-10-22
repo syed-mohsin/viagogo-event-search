@@ -14,8 +14,6 @@ ViaGogo.generateWorld = function(numEvents, maxTicketsPerEvent, maxTicketPrice, 
       eventId = 1,
       seenCoords = new Set();
 
-  console.log(maxEvents, worldWidth, worldHeight);
-
   // handle case where numEvents is too large
   if (numEvents > maxEvents) {
     numEvents = Math.floor(maxEvents / 2);
@@ -90,16 +88,17 @@ ViaGogo.getRandomNumber = function(range, offset) {
 ViaGogo.renderNearestEvents = function(listSelector, events, userX, userY) {
   $(listSelector).html('');
 
-  var listElement, distance, event;
+  var listElement, distance, event, cheapestPrice;
 
   for (var i=0; i<5 && i<events.length; i++) {
     event = events[i];
 
     distance = Math.abs(userX - event.xPos) + Math.abs(userY - event.yPos);
+    cheapestPrice = event.cheapestTicket ? event.cheapestTicket.price : '(no tickets)';
 
     listElement = $('<li></li>');
-    listElement.append('Event ' + event.id + ' - ' + event.cheapestTicket.price + ', Distance ' + distance);
-    console.log(listElement);
+    listElement.append('Event ' + event.id + ' - ' + '$' + cheapestPrice + ', Distance ' + distance);
+
     $(listSelector).append(listElement);
   }
 };
@@ -108,7 +107,7 @@ ViaGogo.renderErrorMessage = function(listSelector) {
   $(listSelector).html('<b>Out of range or invalid input (must be formatted as x,y)</b>');
 };
 
-(function() {
+ViaGogo.init = function() {
   var numEvents = 100,
       worldXDimension = 10,
       worldYDimension = 10,
@@ -146,8 +145,6 @@ ViaGogo.renderErrorMessage = function(listSelector) {
       return distance1 - distance2;
     });
 
-    console.log(world.events);
-
     ViaGogo.renderNearestEvents(eventsListSelector, world.events, userX, userY);
   });
-}());
+};
