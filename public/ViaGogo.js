@@ -116,10 +116,12 @@ ViaGogo.getRandomNumber = function(range, offset) {
 ViaGogo.renderNearestEvents = function(listSelector, events, userX, userY) {
   $(listSelector).html('');
 
+  var EVENTS_TO_SHOW = 5;
+
   var listElement, distance, event, cheapestPrice,
       eventOutput, priceOutput, distanceOutput;
 
-  for (var i=0; i<5 && i<events.length; i++) {
+  for (var i=0; i<EVENTS_TO_SHOW && i<events.length; i++) {
     event = events[i];
 
     distance = Math.abs(userX - event.xPos) + Math.abs(userY - event.yPos);
@@ -149,13 +151,19 @@ ViaGogo.renderErrorMessage = function(listSelector) {
  * Initialize listener for user input submission.
  */
 ViaGogo.init = function() {
-  var numEvents = 100,
-      worldXDimension = 10,
-      worldYDimension = 10,
-      maxTicketsPerEvent = 100,
-      maxTicketPrice = 300;
+  var NUM_EVENTS = 100,
+      WORLD_X_DIMENSION = 10,
+      WORLD_Y_DIMENSION = 10,
+      MAX_TICKETS_PER_EVENT = 100,
+      MAX_TICKET_PRICE = 300;
 
-  var world = ViaGogo.generateWorld(numEvents, maxTicketsPerEvent, maxTicketPrice, worldXDimension, worldYDimension);
+  var world = ViaGogo.generateWorld(
+    NUM_EVENTS,
+    MAX_TICKETS_PER_EVENT,
+    MAX_TICKET_PRICE,
+    WORLD_X_DIMENSION,
+    WORLD_Y_DIMENSION
+  );
 
   var buttonSelector = '[name=find_tickets]',
       inputSelector = '[name=coordinates]',
@@ -172,8 +180,8 @@ ViaGogo.init = function() {
 
     // input validation
     if (inputCoords.length !== 2 ||
-        Math.abs(userX) > worldXDimension ||
-        Math.abs(userY) > worldYDimension) {
+        Math.abs(userX) > WORLD_X_DIMENSION ||
+        Math.abs(userY) > WORLD_Y_DIMENSION) {
 
         return ViaGogo.renderErrorMessage(eventsListSelector);
     }
